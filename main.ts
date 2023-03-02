@@ -16,7 +16,7 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
-        `, mySprite, -100, 0)
+        `, mySprite, -200, 0)
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     projectile = sprites.createProjectileFromSprite(img`
@@ -38,15 +38,16 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . . . . . . . . . . . . . 
         `, mySprite, 200, 0)
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite2, otherSprite2) {
+    info.changeLifeBy(-1)
+    sprites.destroy(otherSprite2, effects.fire, 500)
+    scene.cameraShake(4, 500)
+    info.changeScoreBy(-5)
+})
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprites.destroy(sprite)
-    sprites.destroy(otherSprite, effects.warmRadial, 500)
+    sprites.destroy(otherSprite, effects.warmRadial, 200)
     info.changeScoreBy(1)
-})
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
-    info.changeLifeBy(-1)
-    sprites.destroy(otherSprite, effects.fire, 500)
-    scene.cameraShake(4, 500)
 })
 let EnemyShip: Sprite = null
 let projectile: Sprite = null
@@ -58,15 +59,15 @@ mySprite = sprites.create(img`
     . 1 1 1 . . . . . . . . . . . . 
     . 1 1 1 . . . . . . . . . . . . 
     . 1 1 8 8 8 8 8 8 . . . . . . . 
-    . 1 1 . . . . . 8 8 . . . . . . 
-    . 1 1 9 9 9 9 9 . 9 9 8 8 . . . 
-    . 1 1 . . . 9 9 9 9 . . 8 8 . . 
-    . 1 1 . . . 9 9 . . . . . 8 8 8 
-    . 1 1 . 9 9 . 9 9 9 9 9 9 9 . 8 
-    . 1 1 . . . . . . . . . . . 8 8 
-    . 1 1 9 9 9 . . . 9 9 8 8 8 8 . 
+    . 1 1 2 2 2 2 2 8 8 . . . . . . 
+    . 1 1 9 9 9 9 9 2 9 9 8 8 . . . 
+    . 1 1 2 2 2 2 9 9 9 2 2 8 8 . . 
+    . 1 1 2 2 2 9 9 2 2 2 2 2 8 8 8 
+    . 1 1 9 9 9 2 9 2 9 9 9 9 9 2 8 
+    . 1 1 2 2 2 2 2 2 2 2 2 2 2 8 8 
+    . 1 1 9 9 9 2 2 2 2 2 8 8 8 8 . 
     . 1 1 1 . 9 9 9 9 9 8 8 . . . . 
-    . 1 1 . . 8 8 8 8 8 . . . . . . 
+    . 1 1 2 . 8 8 8 8 8 . . . . . . 
     . 1 1 8 8 8 . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     `, SpriteKind.Player)
@@ -94,5 +95,6 @@ game.onUpdateInterval(2000, function () {
         `, SpriteKind.Enemy)
     EnemyShip.x = scene.screenWidth()
     EnemyShip.vx = -20
-    EnemyShip.y = randint(10, scene.screenHeight() - 0)
+    EnemyShip.ax = -100
+    EnemyShip.y = randint(scene.screenHeight(), 0 - 0)
 })
